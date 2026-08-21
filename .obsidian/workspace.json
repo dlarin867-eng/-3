@@ -1,0 +1,257 @@
+{
+  "main": {
+    "id": "26cfaefdce465056",
+    "type": "split",
+    "children": [
+      {
+        "id": "99000e2ef5fa88ca",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b0d9e6b9cc7c76c2",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Граф"
+            },
+            "group": "13441befea0090b3"
+          }
+        ]
+      },
+      {
+        "id": "af886ef63df8dc33",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "376a98a04e26d071",
+            "type": "leaf",
+            "state": {
+              "type": "localgraph",
+              "state": {
+                "file": "карта скилов.md",
+                "options": {
+                  "collapse-filter": true,
+                  "search": "",
+                  "localJumps": 1,
+                  "localBacklinks": true,
+                  "localForelinks": true,
+                  "localInterlinks": false,
+                  "showTags": false,
+                  "showAttachments": false,
+                  "hideUnresolved": false,
+                  "collapse-color-groups": true,
+                  "colorGroups": [],
+                  "collapse-display": true,
+                  "showArrow": false,
+                  "textFadeMultiplier": 0,
+                  "nodeSizeMultiplier": 1,
+                  "lineSizeMultiplier": 1,
+                  "collapse-forces": true,
+                  "centerStrength": 0.518713248970312,
+                  "repelStrength": 10,
+                  "linkStrength": 1,
+                  "linkDistance": 250,
+                  "scale": 0.36288736930121024,
+                  "close": true
+                }
+              },
+              "icon": "lucide-git-fork",
+              "title": "Граф карта скилов"
+            },
+            "group": "13441befea0090b3"
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "dd5b35da765cb13f",
+    "type": "split",
+    "children": [
+      {
+        "id": "f3b875fdef8c66cf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0a10dbb5cc818bd8",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Файловый менеджер"
+            }
+          },
+          {
+            "id": "53abc27a28270a29",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Поиск"
+            }
+          },
+          {
+            "id": "e8f770a69f6bcab7",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Закладки"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "1e2378855d3b3e1a",
+    "type": "split",
+    "children": [
+      {
+        "id": "b71876fef2b811ca",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "699026115f9293f6",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Обратные ссылки"
+            }
+          },
+          {
+            "id": "18c34a2c7bc81211",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Исходящие ссылки"
+            }
+          },
+          {
+            "id": "bdeed14d0d384a20",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Теги"
+            }
+          },
+          {
+            "id": "c654a38c10ba0fb2",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Все свойства"
+            }
+          },
+          {
+            "id": "b43e335e2bd0f1e7",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Структура"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false
+    }
+  },
+  "active": "b0d9e6b9cc7c76c2",
+  "lastOpenFiles": [
+    "карта скилов.md",
+    "команда.md",
+    "команда.md.tmp.20284.1d30b57ce192",
+    "карта скилов.md.tmp.20284.532b442df201",
+    "агенты/экспертиза/security-reviewer.md.tmp.20284.f7b393d980aa",
+    "агенты/экспертиза/qa-devops.md.tmp.20284.15f05a96f97d",
+    "агенты/маркетинг/growth-marketer.md.tmp.20284.66809ce18be8",
+    "агенты/маркетинг/market-analyst.md.tmp.20284.8604c0808a4d",
+    "агенты/дизайн/brand-designer.md.tmp.20284.bc51650e76a7",
+    "агенты/дизайн/ui-ux-designer.md.tmp.20284.2e8156e0078d",
+    "агенты/разработка/frontend-developer.md.tmp.20284.01ee4c22dd73",
+    "агенты/разработка/backend-developer.md.tmp.20284.86169477dc80",
+    "агенты/разработка/frontend-developer.md",
+    "журнал.md",
+    "агент 2 — выводы по дизайну.md",
+    "агент 1 — исследование конкурентов.md",
+    "CLAUDE.md",
+    "требования к дизайну.md",
+    "техзадание.md",
+    "исследование.md",
+    "идея.md",
+    "задачник.md",
+    "агент 5 — сводное ТЗ (продукт + лендинг).md",
+    "агент 4 — черновик ТЗ дизайна лендинга.md",
+    "агент 3 — черновик ТЗ дизайна продукта.md"
+  ]
+}

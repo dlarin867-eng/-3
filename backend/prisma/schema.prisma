@@ -1,0 +1,154 @@
+// Схема БД — блок 4 задачника.
+// Источники: идея.md (раздел 5, структура user_profile/daily_target/supplement_log),
+// требования к дизайну.md (§3.1 — какие поля реально показываются в UI).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Goal {
+  bulk
+  maintain
+  cut
+}
+
+enum Theme {
+  system
+  light
+  dark
+}
+
+enum MealSource {
+  photo
+  barcode
+  manual
+}
+
+enum Confidence {
+  high
+  medium
+  low
+}
+
+enum SupplementCategory {
+  protein
+  gainer
+  creatine
+  bcaa
+  pre_workout
+  other
+}
+
+model User {
+  id                  String   @id @default(uuid())
+  email               String   @unique
+  passwordHash        String
+  sex                 String // "m" | "f" — влияет на формулу Миффлина-Сан Жеора (ФТ-1.2)
+  age                 Int
+  heightCm            Float
+  bodyweightKg        Float
+  goal                Goal     @default(maintain)
+  // Диапазон г/кг задан целью (ФТ-1.4): 1.4-2.0 набор/поддержание, 2.3-3.1 сушка.
+  // Значение выше 3.0 хранится только если пользователь явно подтвердил (§3.1.8).
+  proteinTargetGPerKg Float    @default(1.8)
+  proteinOverrideConfirmedAt DateTime?
+  activityFactor      Float    @default(1.375) // множитель формулы (сидячий..высокий)
+  // Дни недели, отмеченные как тренировочные: 0=Пн .. 6=Вс (ФТ-4.1)
+  trainingDays        Int[]    @default([])
+  workoutTime         String? // "HH:MM", опционально (ФТ-5.1)
+  eveningSummaryTime  String   @default("20:00") // ФТ-5.4
+  theme               Theme    @default(system)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  meals          Meal[]
+  supplementLogs SupplementLog[]
+  dailyTargets   DailyTarget[]
+  weightLogs     WeightLog[]
+
+  @@map("users")
+}
+
+model Meal {
+  id                String     @id @default(uuid())
+  userId            String
+  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  source            MealSource
+  loggedAt          DateTime   @default(now())
+  confidence        Confidence? // null для barcode/manual — confidence только у фото-распознавания (ФТ-2.4)
+  matchedNutrientDb Boolean    @default(false) // "сверено с базой" бейдж (ФТ-2.5)
+  confirmedManually Boolean    @default(false) // после ручной правки confidence перестаёт быть "требует проверки" (§3.4.2)
+  // Офлайн-черновик (НФТ 5.2, §3.1.7): создан без сети, ждёт синхронизации.
+  isOfflineDraft    Boolean    @default(false)
+  syncedAt          DateTime?
+  photoKey          String? // ключ объекта в S3-хранилище, не публичный URL напрямую
+  photoDeletedAt    DateTime? // когда фото было удалено политикой минимизации хранения (НФТ 5.3)
+  createdAt         DateTime   @default(now())
+
+  items MealItem[]
+
+  @@index([userId, loggedAt])
+  @@map("meals")
+}
+
+model MealItem {
+  id            String @id @default(uuid())
+  mealId        String
+  meal          Meal   @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  name          String
+  weightG       Float
+  calories      Float
+  proteinG      Float
+  carbsG        Float
+  fatG          Float
+  matchedDbName String? // название, под которым найдено в Open Food Facts/USDA
+
+  @@map("meal_items")
+}
+
+model SupplementLog {
+  id       String             @id @default(uuid())
+  userId   String
+  user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category SupplementCategory
+  servings Float // порции, не граммы — единицы по умолчанию из справочника (ФТ-6.2)
+  loggedAt DateTime           @default(now())
+
+  @@index([userId, loggedAt])
+  @@map("supplement_logs")
+}
+
+model DailyTarget {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date          DateTime @db.Date
+  isTrainingDay Boolean
+  calories      Int
+  proteinG      Int
+  carbsG        Int
+  fatG          Int
+  // Если норма менялась автокоррекцией по весу — сохраняем предыдущее значение
+  // калорий, чтобы показать "Норма изменена: 2 400 → 2 550 ккал" (§3.4.4).
+  autoAdjustedFromCalories Int?
+  createdAt     DateTime @default(now())
+
+  @@unique([userId, date])
+  @@map("daily_targets")
+}
+
+model WeightLog {
+  id       String   @id @default(uuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weightKg Float
+  loggedAt DateTime @default(now())
+
+  @@index([userId, loggedAt])
+  @@map("weight_logs")
+}

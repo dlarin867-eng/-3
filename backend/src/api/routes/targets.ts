@@ -6,6 +6,7 @@ import { getOrCreateTodayTarget, recomputeTodayTarget } from "../../services/car
 import { computeEveningProteinGap, evaluateUpcomingReminder } from "../../services/reminders.js";
 
 const toggleSchema = z.object({ isTrainingDay: z.boolean() });
+const applyAdjustmentSchema = z.object({ toCalories: z.number().int().positive() });
 
 // Порог для эвристики "последний приём был низкоуглеводным" в блоке
 // "Ближайшее" (§3.2, Экран 2) — точный порог не задан в дизайн-документе,
@@ -53,6 +54,37 @@ export async function targetRoutes(app: FastifyInstance) {
 
     const reminder = evaluateUpcomingReminder(new Date(), user.workoutTime, target.isTrainingDay, lastMealWasLowCarb);
     return { reminder };
+  });
+
+  // Принятие карточки-предложения корректировки (§3.1.5, ФТ-7.4). Само
+  // предложение — /weight/suggestion (только считает, не применяет); этот
+  // роут — единственное место, где calories на сегодня реально меняются
+  // из-за автокоррекции, отдельно от ручного тоггла типа дня.
+  app.post("/targets/today/apply-adjustment", async (request) => {
+    const userId = request.user.sub;
+    const body = applyAdjustmentSchema.parse(request.body);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const current = await prisma.dailyTarget.findUnique({ where: { userId_date: { userId, date: today } } });
+    return prisma.dailyTarget.update({
+      where: { userId_date: { userId, date: today } },
+      data: { calories: body.toCalories, autoAdjustedFromCalories: current?.calories },
+    });
+  });
+
+  // Недельная история для отчётов (§3.2, Экран 8) — только то, что реально
+  // посчитано (дни, когда пользователь открывал приложение), не бэкфилл
+  // задним числом на дни, для которых нормы никогда не существовало.
+  app.get("/targets/history", async (request) => {
+    const userId = request.user.sub;
+    const since = new Date();
+    since.setDate(since.getDate() - 7);
+    since.setHours(0, 0, 0, 0);
+    return prisma.dailyTarget.findMany({
+      where: { userId, date: { gte: since } },
+      orderBy: { date: "asc" },
+    });
   });
 
   app.get("/targets/today/evening-summary", async (request) => {

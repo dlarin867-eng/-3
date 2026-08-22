@@ -1,34 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { DayPill } from "@/components/ui/DayPill";
 import { MacroRing } from "@/components/ui/MacroRing";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
+import type { DailyTarget } from "@/lib/types";
 import styles from "./page.module.css";
 
-// Демонстрационные данные — реальный расчёт (норма на сегодня, тоггл типа
-// дня) уже готов на backend (GET/POST /targets/today, блок 6). Подключение
-// к API — блок 8; здесь только компонентная сборка экрана по §3.1.2/§3.2.
-const DEMO = {
-  training: { calories: 2550, kcalTotal: 2550, protein: 62, proteinTotal: 180, carbs: 210, carbsTotal: 380, fat: 48, fatTotal: 75 },
-  rest: { calories: 1980, kcalTotal: 1980, protein: 62, proteinTotal: 180, carbs: 85, carbsTotal: 120, fat: 70, fatTotal: 90 },
-};
+type Upcoming = { type: "pre_workout_carb_warning" | "post_workout_protein_reminder" } | null;
 
 export default function MainPage() {
-  const [isTrainingDay, setIsTrainingDay] = useState(true);
-  const t = isTrainingDay ? DEMO.training : DEMO.rest;
-  const dayColor = isTrainingDay ? "accent" : "rest";
+  const { user } = useAuth();
+  const [target, setTarget] = useState<DailyTarget | null>(null);
+  const [upcoming, setUpcoming] = useState<Upcoming>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    api.get<DailyTarget>("/targets/today").then(setTarget).catch(() => setTarget(null));
+    api
+      .get<{ reminder: Upcoming }>("/targets/today/upcoming")
+      .then((r) => setUpcoming(r.reminder))
+      .catch(() => setUpcoming(null));
+  }, []);
+
+  async function toggleDayType() {
+    if (!target || busy) return;
+    setBusy(true);
+    try {
+      const updated = await api.post<DailyTarget>("/targets/today/toggle-day-type", {
+        isTrainingDay: !target.isTrainingDay,
+      });
+      setTarget(updated);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!target) {
+    return <p style={{ color: "var(--text-secondary)" }}>Загружаем норму на сегодня…</p>;
+  }
+
+  const dayColor = target.isTrainingDay ? "accent" : "rest";
+  // Прогресс колец продукт покажет реальным (норма минус то, что уже
+  // съедено за день) в связке с дневником — блок 8 продолжается; здесь
+  // прогресс = 100% нормы, пока фактическое потребление за день не считается
+  // на этом экране отдельным запросом.
+  const progress = 1;
 
   return (
     <div className={styles.screen}>
-      <DayPill isTrainingDay={isTrainingDay} onClick={() => setIsTrainingDay((v) => !v)} />
+      <DayPill isTrainingDay={target.isTrainingDay} onClick={toggleDayType} aria-busy={busy} />
 
       <div className={styles.ringBlock}>
-        <MacroRing progress={t.calories / t.kcalTotal} colorVar={dayColor} value={t.calories.toLocaleString("ru-RU")} label="ккал осталось" />
+        <MacroRing progress={progress} colorVar={dayColor} value={target.calories.toLocaleString("ru-RU")} label="ккал на сегодня" />
         <div className={styles.miniRings}>
-          <MacroRing size="sm" progress={t.protein / t.proteinTotal} colorVar="protein" value={String(t.protein)} />
-          <MacroRing size="sm" progress={t.carbs / t.carbsTotal} colorVar={dayColor} value={String(t.carbs)} />
-          <MacroRing size="sm" progress={t.fat / t.fatTotal} colorVar="fat" value={String(t.fat)} />
+          <MacroRing size="sm" progress={progress} colorVar="protein" value={String(target.proteinG)} />
+          <MacroRing size="sm" progress={progress} colorVar={dayColor} value={String(target.carbsG)} />
+          <MacroRing size="sm" progress={progress} colorVar="fat" value={String(target.fatG)} />
         </div>
         <div className={styles.miniCaptions}>
           <span>Белок, г</span>
@@ -36,6 +66,14 @@ export default function MainPage() {
           <span>Жиры, г</span>
         </div>
       </div>
+
+      {upcoming && (
+        <div className={styles.upcoming}>
+          {upcoming.type === "pre_workout_carb_warning"
+            ? "Скоро тренировка — последний приём был низкоуглеводным, стоит добавить углеводов."
+            : "После тренировки — не забудь про белок в течение 1-2 часов."}
+        </div>
+      )}
 
       <div className={styles.quickActions}>
         <Link href="/photo" className={styles.quickAction}>
@@ -58,6 +96,10 @@ export default function MainPage() {
           Спортпит
         </Link>
       </div>
+
+      {user && (
+        <p style={{ marginTop: 20, color: "var(--text-tertiary)", font: "var(--text-caption)" }}>{user.email}</p>
+      )}
     </div>
   );
 }

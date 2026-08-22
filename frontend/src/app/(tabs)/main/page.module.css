@@ -28,6 +28,15 @@
   color: var(--text-secondary);
 }
 
+.upcoming {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: var(--radius-l);
+  background: color-mix(in srgb, var(--rest) 12%, var(--bg-surface));
+  border: 1px solid var(--border);
+  font: var(--text-body-s);
+}
+
 .quickActions {
   display: flex;
   gap: 8px;

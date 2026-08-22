@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { MacroRing } from "@/components/ui/MacroRing";
 import { api, setToken, ApiError } from "@/lib/api";
@@ -9,15 +9,17 @@ import { useAuth } from "@/lib/auth-context";
 import type { DailyTarget, Goal, Sex, User } from "@/lib/types";
 import styles from "./page.module.css";
 
-// Канонический квиз — требования к дизайну.md §5.1. Шаг 0 обязателен здесь
-// (прямой вход в продукт, не через лендинг, см. §3.3). Шаг "Аккаунт" — не из
-// дизайн-документа: сам продукт нигде не расписывает момент создания
-// аккаунта для прямого входа (§4.3 описывает это только для воронки
-// лендинга — регистрация после результата). Чтобы онбординг продукта вообще
+// Канонический квиз — требования к дизайну.md §5.1. Шаг 0 обязателен только
+// при прямом входе в продукт (§3.3); при переходе с лендинга (?entry=landing)
+// пропускается — "hero-секция уже выполнила его функцию" (§5.1, сноска *).
+// Шаг "Аккаунт" — не из дизайн-документа: сам продукт нигде не расписывает
+// момент создания аккаунта для прямого входа (§4.3 описывает это только для
+// воронки лендинга — регистрация после результата). Чтобы онбординг вообще
 // мог сохранить норму, аккаунт создаётся прямо здесь, последним шагом перед
 // расчётом — сознательное решение при переносе в код, не из документа.
 type StepKey = "welcome" | "goal" | "sex" | "stats" | "activity" | "days" | "time" | "account" | "loading" | "result";
-const STEPS: StepKey[] = ["welcome", "goal", "sex", "stats", "activity", "days", "time", "account", "loading", "result"];
+const FULL_STEPS: StepKey[] = ["welcome", "goal", "sex", "stats", "activity", "days", "time", "account", "loading", "result"];
+const FROM_LANDING_STEPS: StepKey[] = FULL_STEPS.filter((s) => s !== "welcome");
 
 const GOAL_OPTIONS: { v: Goal; b: string; s: string }[] = [
   { v: "bulk", b: "Набор массы", s: "Профицит калорий, акцент на белок" },
@@ -45,14 +47,30 @@ interface Answers {
   password?: string;
 }
 
+// useSearchParams() (для ?entry=landing) требует Suspense-границу при
+// статической сборке — сам квиз оборачиваем, чтобы не тянуть его за пределы
+// компонента ради одного параметра.
 export default function OnboardingPage() {
+  return (
+    <Suspense fallback={null}>
+      <OnboardingQuiz />
+    </Suspense>
+  );
+}
+
+function OnboardingQuiz() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { refresh } = useAuth();
+  const steps = useMemo(
+    () => (searchParams.get("entry") === "landing" ? FROM_LANDING_STEPS : FULL_STEPS),
+    [searchParams],
+  );
   const [stepIndex, setStepIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers>({ trainingDays: [] });
   const [error, setError] = useState<string | null>(null);
   const [target, setTarget] = useState<DailyTarget | null>(null);
-  const step = STEPS[stepIndex];
+  const step = steps[stepIndex];
 
   const valid = useMemo(() => {
     switch (step) {
@@ -75,7 +93,7 @@ export default function OnboardingPage() {
 
   function next() {
     setError(null);
-    setStepIndex((i) => Math.min(i + 1, STEPS.length - 1));
+    setStepIndex((i) => Math.min(i + 1, steps.length - 1));
   }
   function back() {
     setError(null);
@@ -89,7 +107,7 @@ export default function OnboardingPage() {
   }
 
   async function submit() {
-    setStepIndex(STEPS.indexOf("loading"));
+    setStepIndex(steps.indexOf("loading"));
     setError(null);
     try {
       const { token } = await api.post<{ token: string; user: User }>("/auth/register", {
@@ -107,14 +125,14 @@ export default function OnboardingPage() {
       const today = await api.get<DailyTarget>("/targets/today");
       setTarget(today);
       await refresh();
-      setStepIndex(STEPS.indexOf("result"));
+      setStepIndex(steps.indexOf("result"));
     } catch (err) {
-      setStepIndex(STEPS.indexOf("account"));
+      setStepIndex(steps.indexOf("account"));
       setError(err instanceof ApiError ? err.message : "Не удалось создать аккаунт. Попробуй ещё раз.");
     }
   }
 
-  const progressPct = (Math.min(stepIndex, STEPS.length - 2) / (STEPS.length - 2)) * 100;
+  const progressPct = (Math.min(stepIndex, steps.length - 2) / (steps.length - 2)) * 100;
 
   return (
     <div className={styles.wrap}>
@@ -124,7 +142,7 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      {step !== "welcome" && step !== "loading" && step !== "result" && (
+      {stepIndex > 0 && step !== "loading" && step !== "result" && (
         <div className={styles.backRow}>
           <button className={styles.backBtn} onClick={back} aria-label="Назад" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>

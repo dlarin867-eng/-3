@@ -1,0 +1,55 @@
+.wrap {
+  position: relative;
+  margin: 0 auto;
+}
+
+.svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.progress {
+  transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress {
+    transition: none;
+  }
+}
+
+.track {
+  stroke: var(--ring-track);
+}
+
+.num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.value {
+  font: var(--text-display-xl);
+  color: var(--text-primary);
+}
+
+.size-sm .value {
+  font: 700 15px var(--font-display);
+}
+
+.label {
+  font: 600 11.5px var(--font-body);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-top: 4px;
+}
+
+.size-sm .label {
+  display: none;
+}

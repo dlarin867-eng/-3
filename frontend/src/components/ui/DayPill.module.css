@@ -1,0 +1,26 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px 6px 10px;
+  border-radius: var(--radius-full);
+  font: var(--text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 0;
+}
+
+.pill svg {
+  width: 14px;
+  height: 14px;
+}
+
+.training {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.rest {
+  background: var(--rest);
+  color: #fff;
+}

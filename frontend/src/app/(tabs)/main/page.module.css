@@ -1,0 +1,57 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+}
+
+.ringBlock {
+  margin: 14px 0 6px;
+  text-align: center;
+}
+
+.miniRings {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 18px;
+}
+
+.miniCaptions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 6px;
+}
+
+.miniCaptions span {
+  width: 72px;
+  font: 500 11px var(--font-body);
+  color: var(--text-secondary);
+}
+
+.quickActions {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0 4px;
+}
+
+.quickAction {
+  flex: 1;
+  height: 64px;
+  border-radius: var(--radius-l);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font: 600 11px var(--font-body);
+  text-decoration: none;
+}
+
+.quickAction svg {
+  width: 20px;
+  height: 20px;
+  color: var(--accent);
+}

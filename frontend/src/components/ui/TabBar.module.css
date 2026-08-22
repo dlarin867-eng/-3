@@ -1,0 +1,29 @@
+.bar {
+  display: flex;
+  height: 64px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-surface);
+  flex: none;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font: 600 10.5px var(--font-body);
+  color: var(--text-tertiary);
+  text-decoration: none;
+}
+
+.item svg {
+  width: 21px;
+  height: 21px;
+}
+
+.active {
+  color: var(--accent);
+}

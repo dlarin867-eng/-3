@@ -4,63 +4,18 @@
     "type": "split",
     "children": [
       {
-        "id": "99000e2ef5fa88ca",
+        "id": "e650cccffba22414",
         "type": "tabs",
         "children": [
           {
-            "id": "b0d9e6b9cc7c76c2",
+            "id": "9cfe810591887380",
             "type": "leaf",
             "state": {
               "type": "graph",
               "state": {},
               "icon": "lucide-git-fork",
               "title": "Граф"
-            },
-            "group": "13441befea0090b3"
-          }
-        ]
-      },
-      {
-        "id": "af886ef63df8dc33",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "376a98a04e26d071",
-            "type": "leaf",
-            "state": {
-              "type": "localgraph",
-              "state": {
-                "file": "задачник.md",
-                "options": {
-                  "collapse-filter": true,
-                  "search": "",
-                  "localJumps": 1,
-                  "localBacklinks": true,
-                  "localForelinks": true,
-                  "localInterlinks": false,
-                  "showTags": false,
-                  "showAttachments": false,
-                  "hideUnresolved": false,
-                  "collapse-color-groups": true,
-                  "colorGroups": [],
-                  "collapse-display": true,
-                  "showArrow": false,
-                  "textFadeMultiplier": 0,
-                  "nodeSizeMultiplier": 1,
-                  "lineSizeMultiplier": 1,
-                  "collapse-forces": true,
-                  "centerStrength": 0.518713248970312,
-                  "repelStrength": 10,
-                  "linkStrength": 1,
-                  "linkDistance": 250,
-                  "scale": 0.5087618855792548,
-                  "close": true
-                }
-              },
-              "icon": "lucide-git-fork",
-              "title": "Граф задачник"
-            },
-            "group": "13441befea0090b3"
+            }
           }
         ]
       }
@@ -226,8 +181,12 @@
       "bases:Создать новую базу": false
     }
   },
-  "active": "b0d9e6b9cc7c76c2",
+  "active": "9cfe810591887380",
   "lastOpenFiles": [
+    "журнал.md.tmp.4776.bc9fd3a6803c",
+    "CLAUDE.md.tmp.4776.ccdb8eda1681",
+    "команда.md.tmp.4776.30b1c311f1ce",
+    "карта скилов.md",
     "журнал.md.tmp.4776.1eb7ce69a6f5",
     "архив/агент 5 — сводное ТЗ (продукт + лендинг).md",
     "архив/агент 4 — черновик ТЗ дизайна лендинга.md",
@@ -244,13 +203,9 @@
     "агент 1 — исследование конкурентов.md",
     "агент 2 — выводы по дизайну.md",
     "команда.md",
-    "карта скилов.md",
     "агенты/экспертиза/data-analyst.md",
     "команда.md.tmp.20284.1d30b57ce192",
     "карта скилов.md.tmp.20284.532b442df201",
-    "агенты/экспертиза/security-reviewer.md.tmp.20284.f7b393d980aa",
-    "агенты/экспертиза/qa-devops.md.tmp.20284.15f05a96f97d",
-    "агенты/маркетинг/growth-marketer.md.tmp.20284.66809ce18be8",
     "агенты/разработка/frontend-developer.md",
     "журнал.md",
     "CLAUDE.md",

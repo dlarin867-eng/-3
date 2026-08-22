@@ -1,6 +1,6 @@
 {
-  "collapse-filter": true,
-  "search": "",
+  "collapse-filter": false,
+  "search": "-path:\"архив/\"",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
@@ -25,6 +25,6 @@
   "repelStrength": 0,
   "linkStrength": 0,
   "linkDistance": 250,
-  "scale": 0.7514342322277472,
+  "scale": 0.3823010968769899,
   "close": true
 }

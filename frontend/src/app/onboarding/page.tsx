@@ -106,13 +106,24 @@ function OnboardingQuiz() {
     }));
   }
 
-  async function submit() {
+  // Демо-режим: пользователь так и не должен думать про email/пароль, чтобы
+  // просто увидеть, как приложение считает норму — аккаунт создаётся сам,
+  // по-настоящему (тот же /auth/register, та же реальная норма), только
+  // данные для входа сгенерированы, а не введены руками.
+  async function submitDemo() {
+    const suffix = Math.random().toString(36).slice(2, 10);
+    await submit({ email: `demo-${suffix}@kbzhu.local`, password: `demo-${suffix}-pass` });
+  }
+
+  async function submit(overrides?: { email: string; password: string }) {
+    const email = overrides?.email ?? answers.email;
+    const password = overrides?.password ?? answers.password;
     setStepIndex(steps.indexOf("loading"));
     setError(null);
     try {
       const { token } = await api.post<{ token: string; user: User }>("/auth/register", {
-        email: answers.email,
-        password: answers.password,
+        email,
+        password,
         sex: answers.sex,
         age: answers.age,
         heightCm: answers.heightCm,
@@ -128,7 +139,20 @@ function OnboardingQuiz() {
       setStepIndex(steps.indexOf("result"));
     } catch (err) {
       setStepIndex(steps.indexOf("account"));
-      setError(err instanceof ApiError ? err.message : "Не удалось создать аккаунт. Попробуй ещё раз.");
+      if (err instanceof ApiError) {
+        // details — это fieldErrors от zod (см. backend errorHandler.ts) — показываем
+        // их явно, а не только общую фразу, чтобы реально понять, что не так.
+        const fieldErrors = (err.details as { fieldErrors?: Record<string, string[]> } | undefined)?.fieldErrors;
+        const specifics = fieldErrors
+          ? Object.entries(fieldErrors)
+              .filter(([, msgs]) => msgs?.length)
+              .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
+              .join("; ")
+          : "";
+        setError(specifics ? `${err.message} — ${specifics}` : err.message);
+      } else {
+        setError("Не удалось создать аккаунт. Попробуй ещё раз.");
+      }
     }
   }
 
@@ -366,9 +390,12 @@ function OnboardingQuiz() {
           </div>
           {error && <p className={styles.error}>{error}</p>}
           <div className={styles.ctaRow}>
-            <Button disabled={!valid} onClick={submit}>
+            <Button disabled={!valid} onClick={() => submit()}>
               Рассчитать мою норму КБЖУ
             </Button>
+            <button className={styles.skip} type="button" onClick={submitDemo}>
+              Посмотреть демо без регистрации
+            </button>
           </div>
         </div>
       )}

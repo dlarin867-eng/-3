@@ -15,11 +15,19 @@ const s3 = new S3Client({
     : undefined,
 });
 
+const s3Configured = Boolean(env.S3_ACCESS_KEY_ID && env.S3_SECRET_ACCESS_KEY);
+
 /**
  * Загружает фото блюда в хранилище. Возвращает ключ объекта (не URL) —
  * публичного доступа к фото нет, только через signed URL (getPhotoUrl).
+ *
+ * Если S3 не настроен (нет ключей — например, при раннем тестировании без
+ * реального провайдера) — не бросает исключение и не блокирует запись
+ * блюда, просто ничего не сохраняет и возвращает null. Распознавание
+ * (claude-vision.ts) работает от буфера в памяти и от этого не зависит.
  */
-export async function uploadMealPhoto(userId: string, buffer: Buffer, contentType: string) {
+export async function uploadMealPhoto(userId: string, buffer: Buffer, contentType: string): Promise<string | null> {
+  if (!s3Configured) return null;
   const key = `meal-photos/${userId}/${randomUUID()}`;
   await s3.send(
     new PutObjectCommand({

@@ -11,10 +11,14 @@
             "id": "9cfe810591887380",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Граф"
+              "type": "markdown",
+              "state": {
+                "file": "команда.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "команда"
             }
           }
         ]
@@ -183,6 +187,11 @@
   },
   "active": "9cfe810591887380",
   "lastOpenFiles": [
+    "журнал.md.tmp.4776.32338214d7c5",
+    "команда.md.tmp.4776.d5badd04f81b",
+    "CLAUDE.md.tmp.4776.03b4cafd291b",
+    "отчёты.md",
+    "отчёты.md.tmp.4776.d49263f1a987",
     "журнал.md.tmp.4776.bc9fd3a6803c",
     "CLAUDE.md.tmp.4776.ccdb8eda1681",
     "команда.md.tmp.4776.30b1c311f1ce",
@@ -196,16 +205,12 @@
     "архив/исследование.html",
     "архив/test.txt",
     "архив/date_of_birth.txt",
-    "архив/Claude",
-    "архив",
     "задачник.md",
     "агент 4 — черновик ТЗ дизайна лендинга.md",
     "агент 1 — исследование конкурентов.md",
     "агент 2 — выводы по дизайну.md",
     "команда.md",
     "агенты/экспертиза/data-analyst.md",
-    "команда.md.tmp.20284.1d30b57ce192",
-    "карта скилов.md.tmp.20284.532b442df201",
     "агенты/разработка/frontend-developer.md",
     "журнал.md",
     "CLAUDE.md",

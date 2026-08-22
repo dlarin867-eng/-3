@@ -79,7 +79,15 @@ function OnboardingQuiz() {
       case "sex":
         return !!answers.sex;
       case "stats":
-        return !!answers.age && !!answers.heightCm && !!answers.bodyweightKg;
+        // Реалистичные диапазоны, не просто "заполнено чем-то" — те же
+        // границы, что на input min/max ниже. Backend проверяет ещё шире
+        // (age до 100, heightCm до 250, bodyweightKg до 300) — здесь именно
+        // "разумно", чтобы не долетать до backend с явным мусором вроде "1".
+        return (
+          !!answers.age && answers.age >= 14 && answers.age <= 90 &&
+          !!answers.heightCm && answers.heightCm >= 130 && answers.heightCm <= 220 &&
+          !!answers.bodyweightKg && answers.bodyweightKg >= 35 && answers.bodyweightKg <= 200
+        );
       case "activity":
         return !!answers.activityFactor;
       case "days":
@@ -257,6 +265,7 @@ function OnboardingQuiz() {
                 inputMode="numeric"
                 min={14}
                 max={90}
+                placeholder="Например, 28"
                 value={answers.age ?? ""}
                 onChange={(e) => setAnswers((a) => ({ ...a, age: Number(e.target.value) || undefined }))}
               />
@@ -269,6 +278,7 @@ function OnboardingQuiz() {
                 inputMode="numeric"
                 min={130}
                 max={220}
+                placeholder="Например, 178"
                 value={answers.heightCm ?? ""}
                 onChange={(e) => setAnswers((a) => ({ ...a, heightCm: Number(e.target.value) || undefined }))}
               />
@@ -282,6 +292,7 @@ function OnboardingQuiz() {
               inputMode="numeric"
               min={35}
               max={200}
+              placeholder="Например, 82"
               value={answers.bodyweightKg ?? ""}
               onChange={(e) => setAnswers((a) => ({ ...a, bodyweightKg: Number(e.target.value) || undefined }))}
             />

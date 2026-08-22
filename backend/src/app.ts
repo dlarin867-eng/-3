@@ -8,6 +8,7 @@ import { authRoutes } from "./api/routes/auth.js";
 import { healthRoutes } from "./api/routes/health.js";
 import { mealRoutes } from "./api/routes/meals.js";
 import { supplementRoutes } from "./api/routes/supplements.js";
+import { targetRoutes } from "./api/routes/targets.js";
 import { userRoutes } from "./api/routes/users.js";
 import { weightRoutes } from "./api/routes/weight.js";
 
@@ -28,6 +29,7 @@ export function buildApp() {
   app.register(mealRoutes);
   app.register(weightRoutes);
   app.register(supplementRoutes);
+  app.register(targetRoutes);
 
   return app;
 }

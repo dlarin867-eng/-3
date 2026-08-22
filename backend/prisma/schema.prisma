@@ -23,6 +23,11 @@ enum Theme {
   dark
 }
 
+enum Sex {
+  m
+  f
+}
+
 enum MealSource {
   photo
   barcode
@@ -48,7 +53,7 @@ model User {
   id                  String   @id @default(uuid())
   email               String   @unique
   passwordHash        String
-  sex                 String // "m" | "f" — влияет на формулу Миффлина-Сан Жеора (ФТ-1.2)
+  sex                 Sex // влияет на формулу Миффлина-Сан Жеора (ФТ-1.2)
   age                 Int
   heightCm            Float
   bodyweightKg        Float

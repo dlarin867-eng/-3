@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { prisma } from "../../db/client.js";
+import { getOrCreateTodayTarget } from "../../services/carb-cycling.js";
 
 // Поля соответствуют шагам онбординг-квиза (требования к дизайну.md §5.1,
 // шаги 1-4) — фронтенд отправляет их одним запросом после экрана "Результат".
@@ -55,6 +56,11 @@ export async function authRoutes(app: FastifyInstance) {
         workoutTime: body.workoutTime,
       },
     });
+
+    // ФТ-1.2: расчёт нормы происходит реально на шаге "Загрузка/расчёт"
+    // квиза, не имитация — считаем и сохраняем сразу, экран результата (§5.1,
+    // шаг 9) просто читает уже готовую запись.
+    await getOrCreateTodayTarget(prisma, user);
 
     const token = app.jwt.sign({ sub: user.id });
     reply.code(201);

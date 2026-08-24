@@ -10,6 +10,12 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16, "JWT_SECRET должен быть длинной случайной строкой"),
   JWT_EXPIRES_IN: z.string().default("7d"),
   ANTHROPIC_API_KEY: z.string().optional(),
+  // Распознавание фото блюда: по умолчанию через OpenRouter (единый ключ,
+  // доступ к сотням моделей) — см. openrouter-vision.ts. "anthropic"
+  // переключает на прямой Claude API (claude-vision.ts), если ANTHROPIC_API_KEY есть.
+  AI_PROVIDER: z.enum(["openrouter", "anthropic"]).default("openrouter"),
+  OPENROUTER_API_KEY: z.string().optional(),
+  OPENROUTER_MODEL: z.string().default("openrouter/free"),
   OPEN_FOOD_FACTS_BASE_URL: z.string().default("https://world.openfoodfacts.org"),
   USDA_FDC_API_KEY: z.string().optional(),
   S3_ENDPOINT: z.string().optional(),

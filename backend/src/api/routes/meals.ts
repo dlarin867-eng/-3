@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "../../db/client.js";
 import { requireAuth } from "../../middleware/auth.js";
 import { uploadMealPhoto } from "../../integrations/photo-storage.js";
-import { recognizeMealPhoto } from "../../integrations/claude-vision.js";
+import { recognizeMealPhoto } from "../../integrations/ai-vision.js";
 import { lookupBarcode } from "../../integrations/open-food-facts.js";
 import { lookupFoodByName } from "../../integrations/usda-fdc.js";
 

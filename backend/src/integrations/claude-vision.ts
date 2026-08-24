@@ -6,16 +6,9 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "../config/env.js";
+import type { RecognizedDish } from "./meal-recognition.types.js";
 
-export interface RecognizedDish {
-  name: string;
-  weightG: number;
-  calories: number;
-  proteinG: number;
-  carbsG: number;
-  fatG: number;
-  confidence: "high" | "medium" | "low";
-}
+export type { RecognizedDish };
 
 // НФТ 5.1: время ответа на распознавание — не более 8с (P95), иначе таймаут
 // -> ручной ввод (см. api/routes/meals.ts, который ловит этот таймаут).

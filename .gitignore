@@ -1,0 +1,12 @@
+# Локальное состояние Obsidian (открытые вкладки, вид графа) — не содержание
+# проекта, меняется от одной сессии к другой, засоряет историю коммитов.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/graph.json
+
+# ОС
+.DS_Store
+Thumbs.db
+
+# backend/ и frontend/ — свои .gitignore внутри (node_modules, .env, dist,
+# .next и т.д.), этот файл — только для корня репозитория.

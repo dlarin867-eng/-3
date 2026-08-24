@@ -75,8 +75,10 @@ export async function recognizeMealPhoto(imageBase64: string, mediaType: string)
         Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
         // Необязательные заголовки — OpenRouter показывает их в своей
         // статистике/лидерборде запросов, на работу API не влияют.
+        // X-Title обязан быть ASCII: сырые HTTP-заголовки — ByteString,
+        // кириллица тут ломает fetch() с TypeError (поймано живым тестом).
         "HTTP-Referer": "https://kbzhu-frontend.vercel.app",
-        "X-Title": "Кольца и Дни",
+        "X-Title": "kbzhu-kolca-i-dni",
       },
       body: JSON.stringify({
         model: env.OPENROUTER_MODEL,

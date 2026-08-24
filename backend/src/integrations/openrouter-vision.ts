@@ -24,9 +24,8 @@
 import { env } from "../config/env.js";
 import type { RecognizedDish } from "./meal-recognition.types.js";
 
-// НФТ 5.1: тот же бюджет по времени, что и у прямого Anthropic API — 8с,
-// иначе таймаут -> ручной ввод (см. api/routes/meals.ts).
-const RECOGNITION_TIMEOUT_MS = 8000;
+// НФТ 5.1 (8с по умолчанию) — настраивается через RECOGNITION_TIMEOUT_MS,
+// см. пояснение в config/env.ts.
 const ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 
 const PROMPT =
@@ -64,7 +63,7 @@ export async function recognizeMealPhoto(imageBase64: string, mediaType: string)
   if (!env.OPENROUTER_API_KEY) return null; // ключ не настроен — тот же fallback, что и таймаут
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), RECOGNITION_TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), env.RECOGNITION_TIMEOUT_MS);
 
   try {
     const response = await fetch(ENDPOINT, {

@@ -74,7 +74,7 @@ export default function PhotoPage() {
         {loading && (
           <div className={styles.loading}>
             <div className={styles.spinner} />
-            Распознаём блюдо… (до 8 секунд, иначе — ручной ввод)
+            Распознаём блюдо… (может занять до минуты — бесплатная модель ИИ, иначе — ручной ввод)
           </div>
         )}
 

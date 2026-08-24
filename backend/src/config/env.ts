@@ -16,6 +16,13 @@ const envSchema = z.object({
   AI_PROVIDER: z.enum(["openrouter", "anthropic"]).default("openrouter"),
   OPENROUTER_API_KEY: z.string().optional(),
   OPENROUTER_MODEL: z.string().default("openrouter/free"),
+  // НФТ 5.1 задаёт 8с — рассчитано на быстрый синхронный вызов (Claude API
+  // напрямую). Бесплатный роутер OpenRouter на практике часто отвечает
+  // дольше (см. журнал 2026-08-24 — до 50с у "думающих" моделей), поэтому
+  // бюджет вынесен в переменную: можно поднять для проверки механики /
+  // реального использования бесплатного тира, не трогая код и не путая с
+  // самим требованием НФТ 5.1 (значение по умолчанию его не меняет).
+  RECOGNITION_TIMEOUT_MS: z.coerce.number().default(8000),
   OPEN_FOOD_FACTS_BASE_URL: z.string().default("https://world.openfoodfacts.org"),
   USDA_FDC_API_KEY: z.string().optional(),
   S3_ENDPOINT: z.string().optional(),

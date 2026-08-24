@@ -81,7 +81,23 @@ export async function mealRoutes(app: FastifyInstance) {
     const items = await Promise.all(
       dishes.map(async (dish) => {
         const usdaMatch = await lookupFoodByName(dish.name);
-        if (!usdaMatch) return { ...dish, matchedNutrientDb: false };
+        if (!usdaMatch) {
+          // Явно перечисляем поля MealItem, а не спред всего dish — у dish
+          // есть confidence (RecognizedDish), которого нет в схеме MealItem
+          // (confidence живёт на уровне всего Meal, см. ниже) — спред уронил
+          // бы prisma.meal.create с "Unknown argument confidence" (реальный
+          // баг, пойманный на проде 2026-08-24, когда распознавание впервые
+          // реально сработало вместо fallback на пустой черновик).
+          return {
+            name: dish.name,
+            weightG: dish.weightG,
+            calories: dish.calories,
+            proteinG: dish.proteinG,
+            carbsG: dish.carbsG,
+            fatG: dish.fatG,
+            matchedNutrientDb: false,
+          };
+        }
         const factor = dish.weightG / 100;
         return {
           name: dish.name,

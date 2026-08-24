@@ -94,16 +94,29 @@ export async function recognizeMealPhoto(imageBase64: string, mediaType: string)
       }),
     });
 
-    if (!response.ok) return null; // например, невалидный ключ или модель недоступна — тот же fallback
+    if (!response.ok) {
+      // Например, невалидный ключ или модель недоступна — тот же fallback,
+      // но логируем причину: без этого 2026-08-24 отладка "не распознаёт"
+      // на проде заняла кучу ручных прогонов вместо одного взгляда в лог.
+      console.warn(`[openrouter-vision] ${response.status} от OpenRouter, модель ${env.OPENROUTER_MODEL}`);
+      return null;
+    }
 
     const body = (await response.json()) as {
       choices?: Array<{ message?: { content?: string } }>;
+      model?: string;
     };
     const text = body.choices?.[0]?.message?.content;
-    if (!text) return null;
+    if (!text) {
+      console.warn(`[openrouter-vision] пустой content от модели ${body.model ?? "?"}`);
+      return null;
+    }
 
     const parsed = extractJson(text) as { dishes?: Array<Record<string, unknown>> } | null;
-    if (!parsed?.dishes) return null;
+    if (!parsed?.dishes) {
+      console.warn(`[openrouter-vision] не удалось распарсить JSON от модели ${body.model ?? "?"}: ${text.slice(0, 200)}`);
+      return null;
+    }
 
     return parsed.dishes.map((d) => ({
       name: String(d.name),
@@ -114,8 +127,11 @@ export async function recognizeMealPhoto(imageBase64: string, mediaType: string)
       fatG: Number(d.fat_g),
       confidence: (d.confidence as RecognizedDish["confidence"]) ?? "low",
     }));
-  } catch {
-    return null; // таймаут или сетевая ошибка — тот же путь, что и "ключ не настроен"
+  } catch (err) {
+    // Таймаут или сетевая ошибка — тот же путь, что и "ключ не настроен",
+    // но логируем причину (см. пояснение выше про 2026-08-24).
+    console.warn(`[openrouter-vision] таймаут/сетевая ошибка: ${err instanceof Error ? err.message : String(err)}`);
+    return null;
   } finally {
     clearTimeout(timer);
   }
